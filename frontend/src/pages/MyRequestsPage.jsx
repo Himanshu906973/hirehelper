@@ -3,6 +3,7 @@ import { MapPin, Clock, Send, Image } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PageHeader from '../components/layout/PageHeader';
 import { getMyRequests } from '../services/api';
+import { getImageUrl } from '../services/helper';
 
 const CATEGORY_COLORS = {
   moving: 'cat-moving', gardening: 'cat-gardening', painting: 'cat-painting',
@@ -94,9 +95,9 @@ export default function MyRequestsPage() {
 
                 {req.task_id?.picture && (
                   <div className="my-request-task-img">
-                    <img src={req.task_id.picture} alt={req.task_id.title} />
+                  <img src={getImageUrl(req.task_id.picture)} alt={req.task_id.title} />
                   </div>
-                )}
+               )}
               </div>
             ))}
           </div>

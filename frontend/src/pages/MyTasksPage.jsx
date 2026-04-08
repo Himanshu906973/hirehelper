@@ -4,6 +4,7 @@ import { Plus, MapPin, Clock, Trash2, Image } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PageHeader from '../components/layout/PageHeader';
 import { getMyTasks, deleteTask } from '../services/api';
+import { getImageUrl } from '../services/helper';
 
 const formatDateTime = (d) => {
   if (!d) return '';
@@ -88,7 +89,7 @@ export default function MyTasksPage() {
               <div className="task-card" key={task._id}>
                 <div className="task-card-img">
                   {task.picture ? (
-                    <img src={task.picture} alt={task.title} />
+                    <img src={getImageUrl(task.picture)} alt={task.title} />
                   ) : (
                     <Image size={40} />
                   )}

@@ -3,6 +3,7 @@ import { MapPin, Clock, Image } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PageHeader from '../components/layout/PageHeader';
 import { getFeedTasks, sendRequest } from '../services/api';
+import { getImageUrl } from '../services/helper';
 
 const CATEGORY_COLORS = {
   moving: 'cat-moving', gardening: 'cat-gardening', painting: 'cat-painting',
@@ -88,7 +89,7 @@ export default function FeedPage() {
               <div className="task-card" key={task._id}>
                 <div className="task-card-img">
                   {task.picture ? (
-                    <img src={task.picture} alt={task.title} />
+                    <img src={getImageUrl(task.picture)} alt={task.title} />
                   ) : (
                     <Image size={40} />
                   )}
