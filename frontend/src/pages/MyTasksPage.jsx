@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, MapPin, Clock, Trash2, Image } from 'lucide-react';
+import { Plus, MapPin, Clock, Trash2, Image, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PageHeader from '../components/layout/PageHeader';
-import { getMyTasks, deleteTask } from '../services/api';
+import { getMyTasks, deleteTask, updateTask } from '../services/api';
 import { getImageUrl } from '../services/helper';
 
 const formatDateTime = (d) => {
@@ -18,6 +18,7 @@ export default function MyTasksPage() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState({});
+  const [completing, setCompleting] = useState({});
 
   const fetchTasks = useCallback(async (search = '') => {
     setLoading(true);
@@ -32,6 +33,21 @@ export default function MyTasksPage() {
   }, []);
 
   useEffect(() => { fetchTasks(); }, [fetchTasks]);
+  const handleComplete = async (id) => {
+  if (!window.confirm('Mark this task as completed?')) return;
+  setCompleting((p) => ({ ...p, [id]: true }));
+  try {
+    await updateTask(id, { status: 'completed' });
+    setTasks((prev) =>
+      prev.map((t) => t._id === id ? { ...t, status: 'completed' } : t)
+    );
+    toast.success('Task marked as completed! 🎉');
+  } catch {
+    toast.error('Failed to update task.');
+  } finally {
+    setCompleting((p) => ({ ...p, [id]: false }));
+  }
+};
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this task?')) return;
@@ -113,7 +129,18 @@ export default function MyTasksPage() {
                       <Clock size={13} /> {formatDateTime(task.start_time)}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                 <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    {task.status === 'in_progress' && (
+                      <button
+                        className="btn btn-success"
+                        style={{ fontSize: 12, padding: '6px 12px' }}
+                        onClick={() => handleComplete(task._id)}
+                        disabled={completing[task._id]}
+                      >
+                        <Check size={13} />
+                        {completing[task._id] ? 'Completing...' : 'Mark Complete'}
+                      </button>
+                    )}
                     <button
                       className="btn btn-danger"
                       style={{ fontSize: 12, padding: '6px 12px' }}
